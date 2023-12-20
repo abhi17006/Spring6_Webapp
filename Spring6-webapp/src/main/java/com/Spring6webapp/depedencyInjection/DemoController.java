@@ -1,6 +1,7 @@
 package com.Spring6webapp.depedencyInjection;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -12,8 +13,8 @@ public class DemoController {
 
     //constructor dependency injection
 
-    @Autowired
-    public DemoController(Coach thCoach){
+    @Autowired //using @Qualifier
+    public DemoController(@Qualifier ("footballCoach") Coach thCoach){
         mycCoach = thCoach;
     }
 
