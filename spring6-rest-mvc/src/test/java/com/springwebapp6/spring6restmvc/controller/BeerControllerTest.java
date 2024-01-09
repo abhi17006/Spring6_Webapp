@@ -2,20 +2,18 @@ package com.springwebapp6.spring6restmvc.controller;
 
 import com.springwebapp6.spring6restmvc.Service.BeerService;
 import com.springwebapp6.spring6restmvc.Service.BeerServiceImpl;
-import com.springwebapp6.spring6restmvc.model.Beer;
+import com.springwebapp6.spring6restmvc.model.BeerDTO;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.awt.*;
+import java.util.Optional;
 import java.util.UUID;
 
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.hamcrest.core.Is.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -48,7 +46,7 @@ class BeerControllerTest {
     void getBeerByIdNotFound() {
 
         try {
-            given(beerService.getBeerById(any(UUID.class))).willThrow(NotFoundException.class);
+            given(beerService.getBeerById(any(UUID.class))).willReturn(Optional.empty());
             mockMvc.perform(get(BeerController.BEER_PATH_ID, UUID.randomUUID()))
                     .andExpect(status().isNotFound());
         } catch (Exception e) {
@@ -61,9 +59,9 @@ class BeerControllerTest {
         try {
 
             //to return data
-            Beer testBeer = beerServiceImpl.listBeers().get(0);
+            BeerDTO testBeer = beerServiceImpl.listBeers().get(0);
 
-            given(beerService.getBeerById(any(UUID.class))).willReturn(testBeer);
+            given(beerService.getBeerById(any(UUID.class))).willReturn(Optional.of(testBeer));
 
             //perfoam OPearation on the API url, accept media type JSON and expect result "OK"
             //mockMvc.perform(get("/api/v1/beer/"+UUID.randomUUID()) //insead use defined variables
