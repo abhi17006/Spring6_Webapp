@@ -1,9 +1,7 @@
 package com.springwebapp6.spring6restmvc.controller;
 
 import com.springwebapp6.spring6restmvc.Service.CustomerService;
-import com.springwebapp6.spring6restmvc.Service.CustomerServiceImpl;
-import com.springwebapp6.spring6restmvc.model.Customer;
-import lombok.NoArgsConstructor;
+import com.springwebapp6.spring6restmvc.model.CustomerDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -21,18 +19,18 @@ public class CustomerController {
     private final CustomerService customerService;
 
     @GetMapping("/customer")
-    public List<Customer> listAllCustomers(){
+    public List<CustomerDTO> listAllCustomers(){
         return customerService.getAllCustomers();
     }
 
     @GetMapping("/customer/{customerId}")
-    public Customer getCustomerById( @PathVariable("customerId") UUID uuid){
+    public CustomerDTO getCustomerById(@PathVariable("customerId") UUID uuid){
         return customerService.getCustomerId(uuid);
     }
 
     @PostMapping("/customer")
-    public ResponseEntity addCustomer(@RequestBody Customer customer){
-        Customer savedCustomer = customerService.saveNewCustomer(customer);
+    public ResponseEntity addCustomer(@RequestBody CustomerDTO customer){
+        CustomerDTO savedCustomer = customerService.saveNewCustomer(customer);
 
         //adding headers
         HttpHeaders headers = new HttpHeaders();
@@ -41,7 +39,7 @@ public class CustomerController {
     }
 
     @PutMapping("/customer/{customerId}")
-    public ResponseEntity updateById(@PathVariable("customerId") UUID uuid , @RequestBody Customer customer){
+    public ResponseEntity updateById(@PathVariable("customerId") UUID uuid , @RequestBody CustomerDTO customer){
         customerService.updateCustomerById(uuid, customer);
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
