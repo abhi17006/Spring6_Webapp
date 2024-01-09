@@ -43,6 +43,19 @@ class BeerControllerTest {
     BeerService beerService;
 
     BeerServiceImpl beerServiceImpl = new BeerServiceImpl();//calling ServiceImpl class
+
+    @Test
+    void getBeerByIdNotFound() {
+
+        try {
+            given(beerService.getBeerById(any(UUID.class))).willThrow(NotFoundException.class);
+            mockMvc.perform(get(BeerController.BEER_PATH_ID, UUID.randomUUID()))
+                    .andExpect(status().isNotFound());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     @Test
     void getBeerById(){
         try {
@@ -53,7 +66,8 @@ class BeerControllerTest {
             given(beerService.getBeerById(any(UUID.class))).willReturn(testBeer);
 
             //perfoam OPearation on the API url, accept media type JSON and expect result "OK"
-            mockMvc.perform(get("/api/v1/beer/"+UUID.randomUUID())
+            //mockMvc.perform(get("/api/v1/beer/"+UUID.randomUUID()) //insead use defined variables
+            mockMvc.perform(get(BeerController.BEER_PATH_ID, testBeer.getId())
                     .accept(MediaType.APPLICATION_JSON))
                     .andExpect(status().isOk())
                     .andExpect(content().contentType(MediaType.APPLICATION_JSON))
