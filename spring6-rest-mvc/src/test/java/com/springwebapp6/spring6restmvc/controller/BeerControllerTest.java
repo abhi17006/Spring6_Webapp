@@ -20,8 +20,8 @@ import java.util.UUID;
 import static org.hamcrest.core.Is.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.mockito.Mockito.verify;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 //@SpringBootTest
@@ -83,7 +83,7 @@ class BeerControllerTest {
         }
     }
 
-    //test create BeerNull Beer Name
+    //test create BeerNull Beer Name for Data Validation
     @Test
     void testCreateBeerNullBeerName(){
         BeerDTO beerDTO = BeerDTO.builder().build();
@@ -96,7 +96,7 @@ class BeerControllerTest {
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(objectMapper.writeValueAsString(beerDTO)))
                   .andExpect(status().isBadRequest())
-                  .andExpect(jsonPath("$.length()", is(2)))
+                  .andExpect(jsonPath("$.length()", is(6))) //check number validation given
                   .andReturn();
 
             System.out.println(mvcResult.getResponse().getContentAsString());
@@ -104,5 +104,21 @@ class BeerControllerTest {
             throw new RuntimeException(e);
         }
     }
+
+    @Test //failed Test need to check
+    void testUpdateBeerBlankName() throws Exception {
+        BeerDTO beer = beerServiceImpl.listBeers().get(0);
+
+        given(beerService.updateBeerById(any(), any())).willReturn(Optional.of(beer));
+
+        mockMvc.perform(put(BeerController.BEER_PATH_ID, beer.getId())
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(beer)))
+                .andExpect(status().isNoContent())
+                .andExpect(jsonPath("$.length()", is(1)));
+
+    }
+
 
 }
