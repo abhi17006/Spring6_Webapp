@@ -4,6 +4,7 @@ import com.springwebapp6.spring6restmvc.model.BeerStyle;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -30,6 +31,8 @@ public class Beer {
 
     @NotNull
     @NotBlank
+    @Size(max = 25)
+    @Column(length = 25)
     private String beerName;
 
     @NotNull
