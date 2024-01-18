@@ -1,5 +1,6 @@
 package com.springwebapp6.spring6restmvc.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.springwebapp6.spring6restmvc.Service.BeerService;
 import com.springwebapp6.spring6restmvc.Service.BeerServiceImpl;
 import com.springwebapp6.spring6restmvc.model.BeerDTO;
@@ -9,7 +10,9 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 
+import java.lang.runtime.ObjectMethods;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -18,6 +21,7 @@ import static org.hamcrest.core.Is.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 //@SpringBootTest
@@ -36,10 +40,11 @@ class BeerControllerTest {
     //Mockito Test
     @Autowired
     MockMvc mockMvc;
+    @Autowired
+    ObjectMapper objectMapper;
 
     @MockBean
     BeerService beerService;
-
     BeerServiceImpl beerServiceImpl = new BeerServiceImpl();//calling ServiceImpl class
 
     @Test
@@ -77,4 +82,27 @@ class BeerControllerTest {
             throw new RuntimeException(e);
         }
     }
+
+    //test create BeerNull Beer Name
+    @Test
+    void testCreateBeerNullBeerName(){
+        BeerDTO beerDTO = BeerDTO.builder().build();
+        given(beerService.saveNewBeer(any(BeerDTO.class))).willReturn(beerServiceImpl.listBeers().get(1));
+
+        //mockMvc test
+        try {
+          MvcResult mvcResult = mockMvc.perform(post(BeerController.BEER_PATH)
+                    .accept(MediaType.APPLICATION_JSON)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(beerDTO)))
+                  .andExpect(status().isBadRequest())
+                  .andExpect(jsonPath("$.length()", is(2)))
+                  .andReturn();
+
+            System.out.println(mvcResult.getResponse().getContentAsString());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 }
