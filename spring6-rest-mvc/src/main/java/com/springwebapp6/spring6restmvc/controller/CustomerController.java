@@ -16,19 +16,21 @@ import java.util.UUID;
 @RestController
 public class CustomerController {
 
+    public static final String CUSTOMER_PATH = "/api/v1/customer";
+    public static final String CUSTOMER_PATH_ID = CUSTOMER_PATH +"/{customerId}";
     private final CustomerService customerService;
 
-    @GetMapping("/customer")
+    @GetMapping(CUSTOMER_PATH)
     public List<CustomerDTO> listAllCustomers(){
         return customerService.getAllCustomers();
     }
 
-    @GetMapping("/customer/{customerId}")
+    @GetMapping(value = CUSTOMER_PATH_ID)
     public CustomerDTO getCustomerById(@PathVariable("customerId") UUID uuid){
-        return customerService.getCustomerId(uuid);
+        return customerService.getCustomerId(uuid).orElseThrow(NotFoundException::new);
     }
 
-    @PostMapping("/customer")
+    @PostMapping(CUSTOMER_PATH)
     public ResponseEntity addCustomer(@RequestBody CustomerDTO customer){
         CustomerDTO savedCustomer = customerService.saveNewCustomer(customer);
 
@@ -38,17 +40,25 @@ public class CustomerController {
         return new ResponseEntity(headers,HttpStatus.CREATED);
     }
 
-    @PutMapping("/customer/{customerId}")
+    @PutMapping(CUSTOMER_PATH_ID)
     public ResponseEntity updateById(@PathVariable("customerId") UUID uuid , @RequestBody CustomerDTO customer){
         customerService.updateCustomerById(uuid, customer);
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 
-    @DeleteMapping("/customer/{customerId}")
+    @DeleteMapping(CUSTOMER_PATH_ID)
     public ResponseEntity deleteById(@PathVariable("customerId") UUID uuid){
         customerService.deleteById(uuid);
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 
+    @PatchMapping(CUSTOMER_PATH_ID)
+    public ResponseEntity patchCustomerById(@PathVariable("customerId") UUID customerId,
+                                            @RequestBody CustomerDTO customer){
+
+        customerService.patchCustomerById(customerId, customer);
+
+        return new ResponseEntity(HttpStatus.NO_CONTENT);
+    }
 
 }

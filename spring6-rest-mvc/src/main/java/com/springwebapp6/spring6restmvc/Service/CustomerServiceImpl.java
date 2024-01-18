@@ -2,6 +2,7 @@ package com.springwebapp6.spring6restmvc.Service;
 
 import com.springwebapp6.spring6restmvc.model.CustomerDTO;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -42,8 +43,8 @@ public class CustomerServiceImpl implements CustomerService {
         customerMap.put(customer3.getId(), customer3);
     }
     @Override
-    public CustomerDTO getCustomerId(UUID id) {
-        return customerMap.get(id);
+    public Optional<CustomerDTO> getCustomerId(UUID id) {
+        return Optional.of(customerMap.get(id));
     }
 
     @Override
@@ -75,5 +76,14 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public void deleteById(UUID customerId) {
         customerMap.remove(customerId);
+    }
+
+    @Override
+    public void patchCustomerById(UUID customerId, CustomerDTO customer) {
+        CustomerDTO existing = customerMap.get(customerId);
+
+        if(StringUtils.hasText(customer.getName())){
+            existing.setName(customer.getName());
+        }
     }
 }
