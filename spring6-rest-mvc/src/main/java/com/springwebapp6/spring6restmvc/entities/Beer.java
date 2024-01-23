@@ -10,6 +10,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -21,11 +23,19 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Beer {
+
+    //error in String Type Id column, soultion use @JdbcTypeCode(SqlTypes.CHAR)
+    /*
+    org.springframework.orm.jpa.JpaSystemException: could not execute statement
+    [Incorrect string value: '\x8BQ\xF2\x09\x81o...' for column 'id' at row 1]
+     */
     @Id
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
-    @Column(length = 36, columnDefinition = "varChar", updatable = false, nullable = false)
+    @JdbcTypeCode(SqlTypes.CHAR)
+    @Column(length = 36, columnDefinition = "varchar(36)", updatable = false, nullable = false)
     private UUID id;
+
     @Version
     private Integer version;
 
