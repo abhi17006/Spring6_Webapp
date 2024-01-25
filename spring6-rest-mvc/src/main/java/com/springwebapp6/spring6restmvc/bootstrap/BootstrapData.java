@@ -44,7 +44,7 @@ public class BootstrapData implements CommandLineRunner {
 
     private void loadCsvData() {
         if (beerRepository.count()<10){
-            System.out.println("Abhi");
+
             try {
                 File file = ResourceUtils.getFile("classpath:csvdata/beers.csv");
 

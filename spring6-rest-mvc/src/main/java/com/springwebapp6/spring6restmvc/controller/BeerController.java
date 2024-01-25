@@ -2,6 +2,7 @@ package com.springwebapp6.spring6restmvc.controller;
 
 import com.springwebapp6.spring6restmvc.Service.BeerService;
 import com.springwebapp6.spring6restmvc.model.BeerDTO;
+import com.springwebapp6.spring6restmvc.model.BeerStyle;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -22,9 +23,14 @@ public class BeerController {
     //Controller Path URLS defined
     public static final String BEER_PATH = "/api/v1/beer";
     public static final String BEER_PATH_ID = BEER_PATH + "/{beerId}";
+
     @GetMapping(value = BEER_PATH)
-    public List<BeerDTO> listBeers(){
-        return beerService.listBeers();
+    //using Query param api/?beerName:value and
+    //for api/beerStyle:value
+    public List<BeerDTO> listBeers(@RequestParam(required = false) String beerName,
+                                   @RequestParam(required = false) BeerStyle beerStyle,
+                                   @RequestParam(required = false) Boolean showInventory){
+        return beerService.listBeers(beerName, beerStyle, showInventory);
     }
 
 

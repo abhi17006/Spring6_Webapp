@@ -1,18 +1,26 @@
 package com.springwebapp6.spring6restmvc.repository;
 
+import com.springwebapp6.spring6restmvc.Service.BeerCsvService;
+import com.springwebapp6.spring6restmvc.Service.BeerCsvServiceImpl;
+import com.springwebapp6.spring6restmvc.Service.BeerServiceImpl;
+import com.springwebapp6.spring6restmvc.bootstrap.BootstrapData;
 import com.springwebapp6.spring6restmvc.entities.Beer;
 import com.springwebapp6.spring6restmvc.model.BeerStyle;
 import jakarta.validation.ConstraintViolationException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.annotation.Import;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+
 @DataJpaTest //DataBase Testing
+@Import({BootstrapData.class, BeerCsvServiceImpl.class})
 class BeerRepositoryTest {
 
     @Autowired
@@ -48,5 +56,12 @@ class BeerRepositoryTest {
             beerRepository.flush();
         });
 
+    }
+
+    //Query test cases
+    @Test //%IPA% sql wildcard %
+    void testGetBeerListByName(){
+        List<Beer> list = beerRepository.findAllByBeerNameIsLikeIgnoreCase("%IPA%");
+        assertThat(list.size()).isEqualTo(321);
     }
 }
