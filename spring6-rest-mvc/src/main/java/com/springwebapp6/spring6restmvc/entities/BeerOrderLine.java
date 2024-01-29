@@ -1,5 +1,6 @@
 package com.springwebapp6.spring6restmvc.entities;
 
+import com.springwebapp6.spring6restmvc.model.BeerStyle;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,15 +13,14 @@ import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.type.SqlTypes;
 
 import java.sql.Timestamp;
-import java.util.Set;
 import java.util.UUID;
 
 @Data
+@Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
 @Builder
-public class BeerOrder {
+public class BeerOrderLine {
 
     @Id
     @GeneratedValue(generator = "UUID")
@@ -46,11 +46,12 @@ public class BeerOrder {
         return this.id == null;
     }
 
-    private String customerRef;
+    private Integer orderQuantity = 0;
+    private Integer quantityAllocated = 0;
 
     @ManyToOne
-    private Customer customer;
+    private BeerOrder beerOrder;
 
-    @OneToMany(mappedBy = "beerOrder")
-    private Set<BeerOrderLine> beerOrderLines;
+    @ManyToOne
+    private Beer beer;
 }
