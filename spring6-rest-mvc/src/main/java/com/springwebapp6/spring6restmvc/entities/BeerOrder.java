@@ -1,10 +1,7 @@
 package com.springwebapp6.spring6restmvc.entities;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.JdbcTypeCode;
@@ -15,12 +12,24 @@ import java.sql.Timestamp;
 import java.util.Set;
 import java.util.UUID;
 
-@Data
-@AllArgsConstructor
+@Getter
+@Setter
+//@AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Builder
 public class BeerOrder {
+    //this would override lombok setter method and access setter Method that we created in the Customer class for the Customer constructor
+   //use helper method
+    public BeerOrder(UUID id, Long version, Timestamp createdDate, Timestamp lastModifiedDate, String customerRef, Customer customer, Set<BeerOrderLine> beerOrderLines) {
+        this.id = id;
+        this.version = version;
+        this.createdDate = createdDate;
+        this.lastModifiedDate = lastModifiedDate;
+        this.customerRef = customerRef;
+        this.setCustomer(customer);
+        this.beerOrderLines = beerOrderLines;
+    }
 
     @Id
     @GeneratedValue(generator = "UUID")
@@ -50,6 +59,12 @@ public class BeerOrder {
 
     @ManyToOne
     private Customer customer;
+
+    //use helper method
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
+        customer.getBeerOrders().add(this);
+    }
 
     @OneToMany(mappedBy = "beerOrder")
     private Set<BeerOrderLine> beerOrderLines;
