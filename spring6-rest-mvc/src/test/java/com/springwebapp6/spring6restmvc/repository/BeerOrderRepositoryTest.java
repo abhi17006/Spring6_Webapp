@@ -2,6 +2,7 @@ package com.springwebapp6.spring6restmvc.repository;
 
 import com.springwebapp6.spring6restmvc.entities.Beer;
 import com.springwebapp6.spring6restmvc.entities.BeerOrder;
+import com.springwebapp6.spring6restmvc.entities.BeerOrderShipment;
 import com.springwebapp6.spring6restmvc.entities.Customer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -50,6 +51,9 @@ class BeerOrderRepositoryTest {
         BeerOrder beerOrder = BeerOrder.builder()
                 .customerRef("Test Order")
                 .customer(testCustomer)
+                .beerOrderShipment(BeerOrderShipment.builder()
+                        .trackingNumber("123uvwq")
+                        .build())
                 .build();
 
         //saveandflush can cause performance issue for complex operations
