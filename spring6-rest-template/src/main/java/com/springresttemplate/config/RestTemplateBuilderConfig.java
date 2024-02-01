@@ -10,14 +10,19 @@ import org.springframework.web.util.DefaultUriBuilderFactory;
 @Configuration
 public class RestTemplateBuilderConfig {
 
+    //externalize root URL
+    @Value("${rest.template.rootUrl}")
+    String rootUrl;
 
     @Bean //return bean of RestTemplateBuilder
     RestTemplateBuilder restTemplateBuilder(RestTemplateBuilderConfigurer configurer){
+
+        assert rootUrl != null;
     //configure takes the new instance and then configures with the springboot defaults
         RestTemplateBuilder builder = configurer.configure(new RestTemplateBuilder());
 
         //
-        DefaultUriBuilderFactory uriBuilderFactory = new DefaultUriBuilderFactory("http://localhost:8080");
+        DefaultUriBuilderFactory uriBuilderFactory = new DefaultUriBuilderFactory(rootUrl);
         return builder.uriTemplateHandler(uriBuilderFactory);
     }
 }

@@ -50,6 +50,6 @@ public class BeerClientImpl implements BeerClient {
         //using getFOrEntity method type of RepsonseEntity with jackson libray and Page
         ResponseEntity<BeerDTOPageImpl> responseEntity =
                 restTemplate.getForEntity(GET_BEER_PATH,BeerDTOPageImpl.class);
-        return null;
+        return responseEntity.getBody();
     }
 }
