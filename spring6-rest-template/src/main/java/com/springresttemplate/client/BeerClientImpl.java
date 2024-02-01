@@ -10,6 +10,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.Map;
 
@@ -22,7 +23,7 @@ public class BeerClientImpl implements BeerClient {
 
     private static final String GET_BEER_PATH = "/api/v1/beer";
     @Override
-    public Page<BeerDTO> listBeers() {
+    public Page<BeerDTO> listBeers(String beerName) {
         //
         RestTemplate restTemplate = restTemplateBuilder.build();
 
@@ -46,10 +47,20 @@ public class BeerClientImpl implements BeerClient {
 //        System.out.println(mapResponseEntity.getBody()); //print getBody data
 
 
+        //Uri component builder get beer path, use uriComponentsBuilder.toUriString() to get path from UriComponentsBuilder
+        UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromPath(GET_BEER_PATH);
+
+        //check beerName is not null
+        if(beerName != null){
+            //add queryParam to pass value
+            uriComponentsBuilder.queryParam("beerName", beerName);
+        }
 
         //using getFOrEntity method type of RepsonseEntity with jackson libray and Page
         ResponseEntity<BeerDTOPageImpl> responseEntity =
-                restTemplate.getForEntity(GET_BEER_PATH,BeerDTOPageImpl.class);
+                restTemplate.getForEntity(uriComponentsBuilder.toUriString(),BeerDTOPageImpl.class);
+
+
         return responseEntity.getBody();
     }
 }
